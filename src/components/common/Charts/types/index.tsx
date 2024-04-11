@@ -6,7 +6,12 @@ export interface IChartProps {
   width?: string;
 }
 
-export type ChartTypes = 'bar' | 'donut' | 'horizontalBar';
+export type ChartTypes =
+  | 'bar'
+  | 'donut'
+  | 'horizontalBar'
+  | 'stackedChart'
+  | 'scatterChart';
 
 export interface ILegendProps<T> {
   data: T[];

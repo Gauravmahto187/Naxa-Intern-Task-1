@@ -79,8 +79,8 @@ export default function ChartContainer<T>({
           type === 'donut'
             ? 'naxatw-col-span-12 naxatw-flex  naxatw-h-full naxatw-items-center sm:naxatw-col-span-6 md:naxatw-col-span-12 lg:naxatw-col-span-6 '
             : yLabel
-            ? 'naxatw-col-span-12'
-            : 'naxatw-col-span-12  naxatw-h-full naxatw-overflow-y-hidden'
+              ? 'naxatw-col-span-12'
+              : 'naxatw-col-span-12  naxatw-h-full naxatw-overflow-y-hidden'
         } ${scrollable ? 'scrollbar naxatw-overflow-auto' : ''}`}
       >
         {chart && chart({ data, fills, scrollable })}

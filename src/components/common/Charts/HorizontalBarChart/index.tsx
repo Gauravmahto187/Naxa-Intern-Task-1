@@ -11,7 +11,7 @@ export default function HorizontalBarChart({ data }: IChartProps) {
       <div className="cover naxatw-flex naxatw-w-full naxatw-flex-col naxatw-gap-2  naxatw-pr-2">
         {finalData?.map((item: any) => (
           <HorizontalBarLabel
-            key=""
+            key={item.name}
             width={item?.percentage}
             value={item?.value}
             label={item?.name}

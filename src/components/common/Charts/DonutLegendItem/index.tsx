@@ -6,10 +6,10 @@ export default function DonutLegendItem({
   percentage,
 }: IDonutLegendItemProps) {
   return (
-    <div className="naxatw-flex naxatw-items-start naxatw-justify-between naxatw-text-sm naxatw-text-grey-800">
-      <div className="legend-box-name naxatw-flex naxatw-flex-grow naxatw-items-start naxatw-justify-items-start naxatw-gap-2">
+    <div className="naxatw-flex naxatw-items-center naxatw-justify-between naxatw-text-sm naxatw-text-grey-800">
+      <div className="legend-box-name naxatw-justify-items naxatw-flex naxatw-flex-grow naxatw-items-center naxatw-gap-2 ">
         <div
-          className="naxatw-my-[2px] naxatw-min-h-[16px] naxatw-min-w-[16px] naxatw-rounded"
+          className="naxatw-min-h-[14px] naxatw-min-w-[14px] naxatw-rounded"
           style={{
             backgroundColor: color,
           }}

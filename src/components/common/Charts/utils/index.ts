@@ -1,8 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable no-restricted-syntax */
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
 
 /**
  *
@@ -89,10 +87,6 @@ export function objectsAreEqual(obj1: any, obj2: any): boolean {
   }
 
   return true;
-}
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
 }
 
 /**
