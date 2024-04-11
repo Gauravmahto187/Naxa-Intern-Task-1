@@ -4,6 +4,7 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { useEffect, useRef, useState } from 'react';
 import Icon from '@Components/common/Icon';
+import Input from '../Input';
 
 interface IMultiSelectProps {
   options: Record<string, any>[];
@@ -25,16 +26,13 @@ export default function MultiSelect({
   className,
 }: IMultiSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchText, setSearchText] = useState('');
   const [selected, setSelected] = useState(selectedOptions || []);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     setSelected(selectedOptions || []);
   }, [selectedOptions]);
-
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
 
   const toggleOption = (optionValue: string) => {
     const updatedSelected = selectedOptions?.includes(optionValue)
@@ -71,6 +69,14 @@ export default function MultiSelect({
   };
 
   useEffect(() => {
+    if (isOpen) {
+      dropdownRef?.current?.focus();
+    } else {
+      setSearchText('');
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
     document.addEventListener('click', handleClickOutside);
 
     return () => {
@@ -78,52 +84,81 @@ export default function MultiSelect({
     };
   }, []);
 
+  const filterOptions = options?.filter(opt =>
+    opt[labelKey]?.toString()?.toLowerCase().includes(searchText.toLowerCase()),
+  );
+
+  const showClearIcon = !!searchText.length;
+
   return (
     <div
       ref={dropdownRef}
-      className={`naxatw-relative naxatw-flex naxatw-w-full naxatw-cursor-pointer naxatw-items-center
-      naxatw-justify-between naxatw-border-b-2  naxatw-border-grey-300 naxatw-bg-white naxatw-py-1
-       hover:naxatw-border-primary-400 ${className}`}
-      onClick={toggleDropdown}
+      className={`naxatw-group naxatw-relative naxatw-flex  naxatw-h-11 naxatw-w-full
+       naxatw-cursor-pointer  naxatw-items-center naxatw-justify-between ${className}`}
+      onClick={() => {
+        setIsOpen(true);
+      }}
     >
-      <span
-        className={`${
-          !selected.length && 'naxatw-text-grey-400'
-        } naxatw-flex-1 naxatw-px-1 naxatw-pl-3`}
-      >
-        {getPlaceholderText()}
-      </span>
-      <span className="naxatw-pr-2 naxatw-text-grey-400">
-        <Icon name={isOpen ? 'expand_less' : 'expand_more'} />
-      </span>
+      <Input
+        type="text"
+        placeholder={getPlaceholderText()}
+        className={`naxatw-w-full  ${
+          selected.length ? 'placeholder:naxatw-text-grey-800' : ''
+        } focus:placeholder:naxatw-text-grey-400 `}
+        value={searchText}
+        onClick={e => {
+          setIsOpen(true);
+        }}
+        onChange={e => {
+          setSearchText(e.target.value);
+        }}
+      />
+
+      {showClearIcon ? (
+        <Icon
+          name="clear"
+          className="naxatw-absolute naxatw-right-0 naxatw-items-center 
+        !naxatw-text-base hover:naxatw-text-primary-400"
+          onClick={() => setSearchText('')}
+        />
+      ) : (
+        <Icon
+          name={!isOpen ? 'expand_more' : 'search'}
+          className="naxatw-absolute naxatw-right-0 naxatw-items-center group-hover:naxatw-text-primary-400"
+        />
+      )}
 
       {isOpen && (
         <ul
-          className="scrollbar naxatw-absolute naxatw-top-[39px] naxatw-z-40 naxatw-flex
-         naxatw-max-h-[150px] naxatw-w-full naxatw-flex-col naxatw-gap-1 naxatw-overflow-auto naxatw-border
-         naxatw-bg-white naxatw-px-2 naxatw-py-1 naxatw-shadow-lg "
+          className="scrollbar naxatw-absolute naxatw-top-[44px] naxatw-z-20 naxatw-flex naxatw-max-h-[160px]
+         naxatw-w-full naxatw-animate-flip-down naxatw-flex-col naxatw-gap-1 naxatw-overflow-auto naxatw-border
+         naxatw-bg-white naxatw-py-1 naxatw-shadow-lg naxatw-duration-300"
         >
-          {options.map(option => (
-            <li
-              className="naxatw-flex naxatw-cursor-pointer naxatw-list-none naxatw-items-start naxatw-py-2 naxatw-text-sm"
-              key={option[valueKey]}
-              onClick={e => {
-                e.stopPropagation();
-                toggleOption(option[valueKey]);
-              }}
-            >
-              <input
-                type="checkbox"
-                className="naxatw-mr-2 naxatw-h-5"
-                value={option[valueKey]}
-                checked={selected.includes(option[valueKey])}
-                onChange={() => toggleOption(option[valueKey])}
-              />
-              <div>{option[labelKey]}</div>
+          {options && filterOptions.length > 0 ? (
+            filterOptions.map(option => (
+              <li
+                className="naxatw-flex naxatw-cursor-pointer naxatw-list-none naxatw-items-start 
+                naxatw-px-2 naxatw-py-2 naxatw-text-sm hover:naxatw-bg-primary-50"
+                key={option[valueKey]}
+                onClick={e => {
+                  e.stopPropagation();
+                  toggleOption(option[valueKey]);
+                }}
+              >
+                <input
+                  type="checkbox"
+                  className="naxatw-mr-2 naxatw-h-5"
+                  value={option[valueKey]}
+                  checked={selected.includes(option[valueKey])}
+                  onChange={() => toggleOption(option[valueKey])}
+                />
+                <div>{option[labelKey]}</div>
+              </li>
+            ))
+          ) : (
+            <li className="naxatw-cursor-default naxatw-px-1 naxatw-py-1 naxatw-text-sm">
+              No options available
             </li>
-          ))}
-          {!options?.length && (
-            <li className="naxatw-cursor-default naxatw-text-sm ">No data</li>
           )}
         </ul>
       )}

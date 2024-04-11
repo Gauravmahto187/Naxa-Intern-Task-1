@@ -1,12 +1,10 @@
+import react from '@vitejs/plugin-react';
 import dotenv from 'dotenv';
 import { domToCodePlugin } from 'dom-to-code/vite';
 import { defineConfig } from 'vite';
-// import react from '@vitejs/plugin-react';
-import react from '@vitejs/plugin-react';
 
 dotenv.config();
 export default defineConfig({
-  // plugins: [react()],
   plugins: [
     react(),
     process.env.NODE_ENV !== 'production'
@@ -34,30 +32,17 @@ export default defineConfig({
     },
   },
   build: {
-    sourcemap: true,
+    sourcemap: process.env.NODE_ENV === 'development',
   },
   define: {
     'process.env': {
       BASE_URL: process.env.BASE_URL,
       API_URL_V1: process.env.API_URL_V1,
       SITE_NAME: process.env.SITE_NAME,
-      FAST_API: process.env.FAST_API,
     },
   },
   server: {
     open: true,
     port: 3040,
-    proxy: {
-      '/api': {
-        target: process.env.API_URL_V1,
-        changeOrigin: true,
-        rewrite: path => path.replace(/^\/api/, ''),
-      },
-      '/fastapi': {
-        target: process.env.FAST_API,
-        changeOrigin: true,
-        rewrite: path => path.replace(/^\/fastapi/, ''),
-      },
-    },
   },
 });

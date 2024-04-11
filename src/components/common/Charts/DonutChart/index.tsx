@@ -4,8 +4,12 @@ import { IChartProps } from '../types';
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
+    const tooltipTextColor = payload[0].payload.fill; // dynamic => changes acc to fill
     return (
-      <div className="custom-tooltip naxatw-relative naxatw-z-20 naxatw-rounded-xl naxatw-border-2 naxatw-bg-white naxatw-px-3 naxatw-py-2 naxatw-text-sm naxatw-text-primary-400">
+      <div
+        className="custom-tooltip naxatw-relative naxatw-z-20 naxatw-rounded-xl naxatw-border-2 naxatw-bg-white naxatw-px-3 naxatw-py-2 naxatw-text-sm "
+        style={{ color: tooltipTextColor }}
+      >
         <p className="label naxatw-font-bold">
           <span className="naxatw-font-normal">{payload[0]?.name}</span> :{' '}
           {payload[0]?.value}
@@ -21,8 +25,8 @@ export default function CustomDonutChart({ data, fills }: IChartProps) {
     <ResponsiveContainer
       width="100%"
       height="100%"
-      minHeight={160}
-      maxHeight={160}
+      minHeight={170}
+      maxHeight={190}
     >
       <PieChart>
         <Pie
@@ -33,7 +37,7 @@ export default function CustomDonutChart({ data, fills }: IChartProps) {
           fill="#8884d8"
           dataKey="value"
           outerRadius="90%"
-          innerRadius={40}
+          innerRadius={52}
           paddingAngle={0}
         >
           {data?.map((_entry: any, index: number) => (

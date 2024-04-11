@@ -6,9 +6,37 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Text,
+  Legend,
 } from 'recharts';
 import { ChartFills } from '../constants';
 import { IChartProps } from '../types';
+
+function truncateString(str: string, num: number) {
+  // If the length of str is less than or equal to num
+  // just return str--don't truncate it.
+  if (str.length <= num) {
+    return str;
+  }
+  // Return str truncated with '...' concatenated to the end of str.
+  return `${str.slice(0, num)}...`;
+}
+
+const CustomizedLabel = (props: any) => {
+  // eslint-disable-next-line react/prop-types
+  const { x, y, payload } = props;
+  return (
+    <Text
+      x={x}
+      y={y + 3}
+      fontSize={14}
+      textAnchor="middle"
+      dominantBaseline="hanging"
+    >
+      {truncateString(payload?.value?.toString() || '', 7)}
+    </Text>
+  );
+};
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
@@ -41,22 +69,22 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-export default function BarChartComponent({
+export default function CustomBarChart({
   data,
   fills = ChartFills,
   scrollable = false,
   width = '150%',
 }: IChartProps) {
-  if (!data || data.length === 0) {
-    return null;
-  }
+  // const keys = Object.keys(data.length > 0 ? data[0] : {});
+  const dataObject = data.length > 0 ? data[0] : {};
 
-  const keys = Object.keys(data[0]);
+  const { name, ...datax } = dataObject;
+  const keys = Object.keys(datax);
 
   return (
     <ResponsiveContainer
       width={scrollable && width ? width : '100%'}
-      minHeight={150}
+      minHeight={200}
       maxHeight={230}
     >
       <BarChart
@@ -72,31 +100,37 @@ export default function BarChartComponent({
         <XAxis
           dataKey="name"
           style={{
-            fontSize: '13.4px',
-            color: '#484848',
+            fontSize: '14px',
+            color: '#212121',
           }}
           tickLine={false}
+          tick={<CustomizedLabel />}
+          interval={0}
         />
+
         <YAxis
           yAxisId="left"
           style={{
             fontSize: '12px',
-            color: '#484848',
+            color: '#212121',
           }}
           tickLine={false}
         />
+        {keys.length > 1 && <Legend />}
 
         <Tooltip content={<CustomTooltip />} />
-        {keys.map((key, i) => (
-          <Bar
-            key={key}
-            yAxisId="left"
-            dataKey={key}
-            fill={fills[i - 1]}
-            barSize={28}
-            radius={[4, 4, 0, 0]}
-          />
-        ))}
+        {keys.map((key, i) => {
+          return (
+            <Bar
+              key={key}
+              yAxisId="left"
+              dataKey={key}
+              fill={fills[i]}
+              barSize={22}
+              radius={[4, 4, 0, 0]}
+            />
+          );
+        })}
       </BarChart>
     </ResponsiveContainer>
   );

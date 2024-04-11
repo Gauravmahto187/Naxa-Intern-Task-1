@@ -4,14 +4,30 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { useEffect, useRef, useState } from 'react';
 import Icon from '@Components/common/Icon';
+import Input from '../Input';
 
 interface ISelectProps {
   options: Record<string, any>[];
-  selectedOption?: string;
+  selectedOption?: string | number | null;
   placeholder?: string;
-  onChange?: (selectedOption: string) => any;
+  onChange?: (selectedOption: any) => void;
   labelKey?: string;
   valueKey?: string;
+  direction?: string;
+  className?: string;
+  withSearch?: boolean;
+  inputTagClassname?: string;
+}
+
+function getPosition(direction: string) {
+  switch (direction) {
+    case 'top':
+      return 'naxatw-bottom-[2.4rem]';
+    case 'bottom':
+      return 'naxatw-top-[2.8rem]';
+    default:
+      return 'naxatw-top-[3rem]';
+  }
 }
 
 export default function Select({
@@ -21,10 +37,20 @@ export default function Select({
   placeholder = 'Select',
   labelKey = 'label',
   valueKey = 'value',
+  direction = 'bottom',
+  className,
+  withSearch = false,
+  inputTagClassname,
 }: ISelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(selectedOption);
+  const [position, setPosition] = useState(direction);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const [searchText, setSearchText] = useState('');
+
+  useEffect(() => {
+    setSelected(selectedOption);
+  }, [selectedOption]);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -40,6 +66,14 @@ export default function Select({
   };
 
   useEffect(() => {
+    if (isOpen) {
+      dropdownRef?.current?.focus();
+    } else {
+      setSearchText('');
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
     document.addEventListener('click', handleClickOutside);
 
     return () => {
@@ -53,44 +87,85 @@ export default function Select({
     onChange(value);
   };
 
+  // check if selected option value matches with item value key
+  const selectedLabel = options.find(item => item[valueKey] === selected)?.[
+    labelKey
+  ];
+
   const getPlaceholderText = () => {
-    if (selected)
-      // @ts-ignore
-      return options.find(item => item[valueKey] === selected)?.[labelKey];
+    if (selected) {
+      return selectedLabel || placeholder;
+    }
     return placeholder;
   };
 
+  const filterOptions = options?.filter(opt =>
+    opt[labelKey].toLowerCase().includes(searchText.toLowerCase()),
+  );
+
+  const showClearIcon = !!searchText.length;
+
   return (
-    <div className="naxatw-relative ">
+    <div className="naxatw-relative">
       <div
         ref={dropdownRef}
-        className=" group naxatw-flex naxatw-h-11 naxatw-w-full naxatw-cursor-pointer  naxatw-items-center
-         naxatw-justify-between naxatw-border-b-2 naxatw-border-grey-300 naxatw-bg-white hover:naxatw-border-b-primary-400"
+        className={`naxatw-group naxatw-relative naxatw-flex naxatw-h-11 naxatw-w-full
+        naxatw-cursor-pointer naxatw-items-center naxatw-justify-between naxatw-border-b-2
+        hover:naxatw-border-blue-400
+        ${className}`}
         onClick={toggleDropdown}
       >
-        <span
-          className={`${
-            !selected && 'naxatw-text-grey-400'
-          } naxatw-flex-1 naxatw-px-1 naxatw-pl-3 naxatw-text-sm naxatw-text-grey-800 group-hover:naxatw-bg-grey-700`}
-        >
-          {getPlaceholderText()}
-        </span>
-        <span className="naxatw-pr-2 naxatw-text-grey-400 group-hover:naxatw-bg-red-700 ">
-          <Icon
-            name={isOpen ? 'expand_less' : 'expand_more'}
-            className="group-hover:naxatw-text-primary-700 "
+        {withSearch ? (
+          <Input
+            type="text"
+            placeholder={getPlaceholderText()}
+            className={`naxatw-w-full naxatw-border-none ${inputTagClassname} ${
+              selected ? 'placeholder:naxatw-text-grey-800' : ''
+            } focus:placeholder:naxatw-text-grey-400 `}
+            value={searchText}
+            onClick={e => {
+              setIsOpen(true);
+            }}
+            onChange={e => {
+              setSearchText(e.target.value);
+            }}
           />
-        </span>
+        ) : (
+          <p
+            className={`naxatw-w-full naxatw-border-none ${
+              selected && selectedLabel ? 'naxatw-text-grey-800' : ''
+            } naxatw-px-2 naxatw-text-sm naxatw-text-grey-400`}
+          >
+            {getPlaceholderText()}
+          </p>
+        )}
+
+        {showClearIcon ? (
+          <Icon
+            name="clear"
+            className="naxatw-absolute naxatw-right-0 naxatw-items-center 
+              !naxatw-text-base hover:naxatw-text-primary-400"
+            onClick={() => setSearchText('')}
+          />
+        ) : (
+          <Icon
+            name={
+              // eslint-disable-next-line no-nested-ternary
+              !isOpen ? 'expand_more' : withSearch ? 'search' : 'expand_less'
+            }
+            className="naxatw-absolute naxatw-right-1 naxatw-items-center group-hover:naxatw-text-primary-400"
+          />
+        )}
       </div>
 
       {isOpen && (
         <ul
-          className="scrollbar naxatw-absolute naxatw-top-[44px] naxatw-z-40 naxatw-flex
-         naxatw-max-h-[150px] naxatw-w-full naxatw-flex-col naxatw-overflow-auto naxatw-border naxatw-bg-white naxatw-shadow-lg"
+          className={`scrollbar naxatw-absolute  naxatw-z-20 naxatw-flex naxatw-max-h-[150px] naxatw-w-full
+           naxatw-animate-flip-down naxatw-flex-col naxatw-overflow-auto naxatw-rounded-md naxatw-border naxatw-bg-white naxatw-shadow-lg
+             naxatw-duration-300 ${getPosition(position)} `}
         >
-          {options?.length ? (
-            // @ts-ignore
-            options.map(option => (
+          {options && filterOptions.length > 0 ? (
+            filterOptions.map(option => (
               <li
                 className="naxatw-flex naxatw-cursor-pointer naxatw-list-none naxatw-items-start naxatw-px-4 naxatw-py-2.5
                 naxatw-text-sm naxatw-text-grey-800 hover:naxatw-bg-primary-50"
@@ -101,8 +176,8 @@ export default function Select({
               </li>
             ))
           ) : (
-            <li className="naxatw-cursor-default naxatw-px-2 naxatw-text-sm naxatw-text-grey-800">
-              No data
+            <li className="naxatw-cursor-default naxatw-px-4 naxatw-py-2.5 naxatw-text-sm">
+              No options available
             </li>
           )}
         </ul>
