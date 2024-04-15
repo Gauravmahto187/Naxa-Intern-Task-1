@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 
-interface LoaderState {
+export interface LoaderState {
   actions: string[];
 }
 
