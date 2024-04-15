@@ -7,8 +7,8 @@ export default function prepareFormData(data: Record<string, any>) {
         value instanceof File
           ? value
           : Array.isArray(value) || typeof value === 'object'
-          ? JSON.stringify(value)
-          : value,
+            ? JSON.stringify(value)
+            : value,
     }),
     {},
   );

@@ -1,8 +1,5 @@
-import { api, authenticated } from '.';
+import { api } from '.';
 
-export const getPalikaProfile = (params: any) =>
-  authenticated(api).get('/palika-profile/', {
-    params,
-  });
+export const signInUser = (data: any) => api.post('/user/sign-in/', data);
 
-export const nothing = '';
+export const logoutUser = () => api.post('/user/logout/');

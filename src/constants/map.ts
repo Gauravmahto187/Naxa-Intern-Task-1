@@ -7,18 +7,6 @@ export const buildingStyles = {
   },
 };
 
-// type: 'fill-extrusion',
-// layout: {},
-// paint: {
-//   'fill-extrusion-color': '#0098ff',
-//   'fill-extrusion-opacity': 1,
-//   'fill-extrusion-height': [
-//     '*',
-//     ['coalesce', ['get', 'floor'], 0], // If 'floor' property is null, use 0 as the default value
-//     3,
-//   ],
-// },
-
 export const roadStyles = {
   type: 'line',
   layout: {},
