@@ -4,9 +4,9 @@ import {
   ModalContentsType,
   PromptDialogContentsType,
 } from '@Constants/modalContents';
+import persist from '@Store/persist';
 
-interface CommonState {
-  palikaProfile: Record<string, any> | null;
+export interface CommonState {
   showModal: boolean;
   modalContent: ModalContentsType;
   showPromptDialog: boolean;
@@ -14,7 +14,6 @@ interface CommonState {
 }
 
 const initialState: CommonState = {
-  palikaProfile: null,
   showModal: false,
   modalContent: null,
   showPromptDialog: false,
@@ -77,4 +76,4 @@ const commonSlice = createSlice({
 
 export { commonSlice };
 
-export default commonSlice.reducer;
+export default persist('common', [], commonSlice.reducer);
