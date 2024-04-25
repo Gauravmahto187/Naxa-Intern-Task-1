@@ -39,7 +39,8 @@
       "@Queries/*": ["api/queries/*"],
       "@Routes/*": ["routes/*"],
       "@Views/*": ["views/*"],
-      "@Components/*": ["components/*"]
+      "@Components/*": ["components/*"],
+      "@UserModule/*": ["modules/user-auth-module/src/*"]
     }
   },
   "include": [".eslintrc.cjs", "src", "src/**/*.ts"],
