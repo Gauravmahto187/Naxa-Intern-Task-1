@@ -84,7 +84,7 @@ jobs:
     name: Deploy Static Files
     needs:
       - build
-    if: ${{ github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/master'  }}
+    if: ${{ github.ref == 'refs/heads/develop-xxx' || github.ref == 'refs/heads/staging-xxx' || github.ref == 'refs/heads/master-xxx'  }}
     runs-on: self-hosted
     steps:
       - name: Clone repository
