@@ -8,7 +8,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "prepare": "husky install",
+    "prepare": "./scripts/setup-user-module.sh && husky install",
     "lint": "eslint ./src/ --ext .ts,.tsx --fix"
   },
   "dependencies": {
