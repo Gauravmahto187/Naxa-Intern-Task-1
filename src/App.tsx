@@ -18,6 +18,13 @@ import {
   getModalContent,
   getPromptDialogContent,
 } from '@Constants/modalContents';
+import Header from '@Components/Header';
+import Content from '@Components/Content';
+import Footer from '@Components/Footer';
+import Footer2 from '@Components/Footer2';
+import DataSource from '@Components/DataSource/DataSource';
+import Explore from '@Components/Explore';
+// import DashboardThirdBox from '@Components/DataSource/DataSource';
 
 export default function App() {
   const { pathname } = useLocation();
@@ -60,11 +67,11 @@ export default function App() {
         !process.env.DISABLE_DOM_TO_CODE &&
         initDomToCode()}
       <div
-        className={`${
-          hideSideBar
-            ? 'naxatw-ml-0'
-            : `naxatw-ml-0 naxatw-flex md:naxatw-ml-[80px]`
-        }`}
+        // className={`${
+        //   hideSideBar
+        //     ? 'naxatw-ml-0'
+        //     : `naxatw-ml-0 naxatw-flex md:naxatw-ml-[80px]`
+        // }`}
       >
         <ToastContainer />
 
@@ -86,12 +93,18 @@ export default function App() {
           {getPromptDialogContent(promptDialogContent)?.content}
         </PromptDialog>
 
-        {generateRoutes({
+        <Header/>
+        <Content/>
+        <DataSource/>
+        <Explore/>
+        <Footer/>
+        <Footer2/>
+        {/* {generateRoutes({
           routes:
             process.env.NODE_ENV !== 'production'
               ? [...testRoutes, ...appRoutes]
               : appRoutes,
-        })}
+        })} */}
       </div>
     </>
   );
